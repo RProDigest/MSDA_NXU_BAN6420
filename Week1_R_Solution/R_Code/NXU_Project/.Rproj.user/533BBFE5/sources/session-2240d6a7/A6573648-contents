@@ -1,0 +1,157 @@
+################################################################################
+# Name: Mubanga Nsofu                                                          #
+# Institution: Nexford University (NXU)                                        #
+# Date : 7th July 2024                                                         #
+# Course: BAN 6420                                                             #
+# Program: Master of Science Data Analytics (MSDA)                             #
+# Lecturer: Professor Raphael Wanjiku                                          #
+# Assignment : 1                                                               #
+################################################################################
+
+## 1.0 INSTALL PACMAN IF NECESSARY -----
+
+if (!require(pacman))
+  install.packages("pacman")
+
+if(!require(reticulate))
+  install.packages("reticulate") # reticulate package doesn't play well with 
+#pacman hence this line of code to fix the issues
+
+
+## 2.0 LOAD THE LIBRARIES USING PACKAGE MANAGER-----
+
+pacman::p_load(tidyverse, # meta package for the data analytics life cycle
+               renv, # Helps to create a reproducible environment
+               reticulate # R lacks faker library Reticulate bridges the gap 
+)
+
+
+
+## 3.0 IMPORT FAKER INTO R SESSION VIA RETICULATE PACKAGE----
+
+
+faker <- import("faker")
+fake <- faker$Faker() # Create a class instance 
+
+
+## 4.0 SETUP THE DIRECTORY AND FILE WHERE TO STORE DATA --------------------
+
+# Specify the directory where you have write permissions (put your own path)
+# e.g. output_directory <- "Your/Preferred/Directory/", mine is the one below
+
+output_directory <- "D:/Nexford/MSDA/MSDA Modules/BAN6420 Python and R Programming/Module 1/R code for Assignment 1/Final_DataSet_Payslips"
+# if your path is long like mine avoid newlines otherwise there will be an error
+# Create the directory if it doesn't exist, mine exists
+
+if (!dir.exists(output_directory)) {
+  dir.create(output_directory, recursive = TRUE)
+}
+
+# Here I specify the filename within the chosen directory
+
+csv_filename <- file.path(output_directory, 'employee_payslip_r.csv')
+
+
+
+## 5.0 GENERATE FAKE DATA ACCORDING TO THE ASSIGNMENT QUESTION----
+
+
+genders <- c('Male', 'Female') # Define possible values for attributes
+
+
+number_employees <- 400  # Define the number of employees
+
+# settng the seed is for both of us to get the same dataset at the end
+
+set.seed(204)
+
+
+# We crate a dataframe here 
+
+employee_list <- data.frame(
+  Employee_Id = integer(),
+  Name = character(),
+  Gender = character(),
+  Age = integer(),
+  Address = character(),
+  Salary_USD = numeric(),
+  Over_Time_Hours = integer(),
+  Leave_Days = integer(),
+  Employee_Level = character(),
+  stringsAsFactors = FALSE
+)
+
+for (employee_id in 1:number_employees) {
+  tryCatch({
+    gender <- sample(genders, 1)
+    name <- if (gender == "Male")
+      fake$name_male()
+    else
+      fake$name_female()
+    address <- fake$address()
+    age <- sample(20:89, 1)
+    salary <- sample(1300:120000, 1)
+    over_time <- sample(0:4, 1)
+    leave_days <- sample(1:21, 1)
+    
+    if (salary > 10000 & salary < 20000) {
+      employee_level <- "A1"
+    } else if (salary > 7500 & salary < 30000 & gender == "Female") {
+      employee_level <- "A5-F"
+    } else {
+      employee_level <- "Unknown"
+    }
+    
+    entry <- data.frame(
+      Employee_Id = employee_id,
+      Name = name,
+      Gender = gender,
+      Age = age,
+      Address = address,
+      Salary_USD = salary,
+      Over_Time_Hours = over_time,
+      Leave_Days = leave_days,
+      Employee_Level = employee_level,
+      stringsAsFactors = FALSE
+    )
+    
+    employee_list <- bind_rows(employee_list, entry)
+  }, error = function(e) {
+    message("Error in generating data for employee ID ", employee_id, ": ", e)
+  })
+}
+
+# I Create a DataFrame and then save to CSV
+
+tryCatch({
+  print(head(employee_list))
+}, error = function(e) {
+  message("Error in creating DataFrame: ", e)
+})
+
+tryCatch({
+  write.csv(employee_list, csv_filename, row.names = FALSE)
+  message("CSV file saved successfully at: ", csv_filename)
+}, error = function(e) {
+  message("Error in Saving CSV file: ", e)
+})
+
+
+
+## 6.0 TAKE A SILENT SNAPSHOT OF THE ENVIRONMENT FOR REPRODUCIBILITY-----
+suppressMessages({
+  renv::snapshot()
+})
+
+
+## 8.0 PRINT THE CONTENT OF THE LOCK FILE INTO THE README FILE-----
+lockfile_content <- readLines("renv.lock")
+writeLines(lockfile_content, "README_lockfile.txt")
+
+
+
+
+
+
+
+
