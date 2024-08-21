@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Survey Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+        }
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-container .inline-fields {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form-container .inline-fields div {
+            width: 48%;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="number"],
+        .form-container select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .form-container input[type="submit"] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-container input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .form-container .expense-fields {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-container .expense-fields div {
+            width: 48%;
+        }
+    </style>
+    <script>
+        function toggleInput(checkbox, inputId) {
+            var inputField = document.getElementById(inputId);
+            inputField.disabled = !checkbox.checked;
+            if (!checkbox.checked) {
+                inputField.value = '';  // Clear the input if the checkbox is unchecked
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Survey Form</h1>
+        <form action="/submit" method="POST">
+            <!-- First Name and Last Name inline -->
+            <div class="inline-fields">
+                <div>
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div>
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+            </div>
+
+            <!-- Age and Gender inline -->
+            <div class="inline-fields">
+                <div>
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" required>
+                </div>
+                <div>
+                    <label for="gender">Gender:</label>
+                    <select id="gender" name="gender" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Race and Income inline -->
+            <div class="inline-fields">
+                <div>
+                    <label for="race">Race:</label>
+                    <select id="race" name="race" required>
+                        <option value="Black">Black</option>
+                        <option value="Indian">Indian</option>
+                        <option value="White">White</option>
+                        <option value="Coloured">Coloured</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="income">Total Income:</label>
+                    <input type="number" id="income" name="income" required>
+                </div>
+            </div>
+
+            <!-- Expenses section with checkboxes and textboxes, split into two columns -->
+            <h3>Expenses</h3>
+            <div class="expense-fields">
+                <div>
+                    <input type="checkbox" id="utilities_checkbox" name="utilities_checkbox" value="utilities" onchange="toggleInput(this, 'utilities')">
+                    <label for="utilities_checkbox">Utilities:</label>
+                    <input type="number" id="utilities" name="utilities_amount" disabled>
+                </div>
+                <div>
+                    <input type="checkbox" id="entertainment_checkbox" name="entertainment_checkbox" value="entertainment" onchange="toggleInput(this, 'entertainment')">
+                    <label for="entertainment_checkbox">Entertainment:</label>
+                    <input type="number" id="entertainment" name="entertainment_amount" disabled>
+                </div>
+            </div>
+
+            <div class="expense-fields">
+                <div>
+                    <input type="checkbox" id="school_fees_checkbox" name="school_fees_checkbox" value="school_fees" onchange="toggleInput(this, 'school_fees')">
+                    <label for="school_fees_checkbox">School Fees:</label>
+                    <input type="number" id="school_fees" name="school_fees_amount" disabled>
+                </div>
+                <div>
+                    <input type="checkbox" id="shopping_checkbox" name="shopping_checkbox" value="shopping" onchange="toggleInput(this, 'shopping')">
+                    <label for="shopping_checkbox">Shopping:</label>
+                    <input type="number" id="shopping" name="shopping_amount" disabled>
+                </div>
+            </div>
+
+            <div class="expense-fields">
+                <div>
+                    <input type="checkbox" id="healthcare_checkbox" name="healthcare_checkbox" value="healthcare" onchange="toggleInput(this, 'healthcare')">
+                    <label for="healthcare_checkbox">Healthcare:</label>
+                    <input type="number" id="healthcare" name="healthcare_amount" disabled>
+                </div>
+            </div>
+
+            <!-- Submit button -->
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>
